@@ -10,5 +10,5 @@ RUN npm ci
 
 COPY . .
 
-#CMD ["npx","playwright","test","practise.spec.js"]
-CMD ["npx","playwright","test"]
+CMD ["npx","playwright","test","practise.spec.js"]
+#CMD ["npx","playwright","test"]
