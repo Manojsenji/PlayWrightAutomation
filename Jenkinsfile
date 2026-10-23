@@ -49,9 +49,15 @@ pipeline {
                       --format='{{.State.ExitCode}}' \
                       "$CONTAINER_NAME")
 
+                    mkdir -p playwright-reports test-results
+
                     docker cp \
-                      "$CONTAINER_NAME:/app/playwright-report/." \
-                      playwright-report/ || true
+                        "$CONTAINER_NAME:/app/playwright-reports/." \
+                        playwright-reports/ || true
+
+                    docker cp \
+                        "$CONTAINER_NAME:/app/test-results/." \
+                        test-results/ || true
 
                     docker cp \
                       "$CONTAINER_NAME:/app/test-results/." \
@@ -65,25 +71,27 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            junit(
-                testResults: 'test-results/results.xml',
-                allowEmptyResults: true
-            )
+   
+post {
+    always {
+        junit(
+            testResults: 'test-results/results.xml',
+            allowEmptyResults: false
+        )
 
-            archiveArtifacts(
-                artifacts: 'playwright-report/**/*,test-results/**/*',
-                allowEmptyArchive: true
-            )
-        }
-
-        success {
-            echo 'Playwright automation PASSED'
-        }
-
-        failure {
-            echo 'Playwright automation FAILED'
-        }
+        archiveArtifacts(
+            artifacts: 'playwright-reports/**/*,test-results/**/*',
+            allowEmptyArchive: true
+        )
     }
+
+    success {
+        echo 'Playwright automation PASSED'
+    }
+
+    failure {
+        echo 'Playwright automation FAILED'
+    }
+}
+
 }

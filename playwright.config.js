@@ -21,9 +21,27 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
 
-  reporter: [
-    ['html', { outputFolder: path.join(__dirname, 'playwright-reports', timestampIST), open: 'never' }]
-  ],
+  // reporter: [
+  //   ['html', { outputFolder: path.join(__dirname, 'playwright-reports', timestampIST), open: 'never' }]
+  // ],
+  
+reporter: [
+  ['list'],
+
+  ['html', {
+    outputFolder: path.join(
+      __dirname,
+      'playwright-reports',
+      timestampIST
+    ),
+    open: 'never'
+  }],
+
+  ['junit', {
+    outputFile: 'test-results/results.xml'
+  }]
+],
+
 
   use: {
     trace: 'on-first-retry',
