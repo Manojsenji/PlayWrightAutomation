@@ -12,4 +12,5 @@ test('practise', async({page})=>{
     console.log(await productLocator.allTextContents());
     console.log(await productLocator.count());
     //await page.pause();
+    //await page.pause();
 })
