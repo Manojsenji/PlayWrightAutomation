@@ -1,0 +1,38 @@
+
+name: Playwright Docker Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  playwright-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build Docker image
+        run: docker build -t playwright-automation .
+
+      - name: Prepare report directory
+        run: mkdir -p playwright-reports
+
+      - name: Run Playwright tests
+        run: |
+          docker run --rm --init --ipc=host \
+            -v "$PWD/playwright-reports:/app/playwright-reports" \
+            playwright-automation
+
+      - name: Upload Playwright reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-reports
+          path: playwright-reports/
+          if-no-files-found: warn
+          retention-days: 14
